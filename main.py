@@ -1,7 +1,28 @@
+from enum import Enum
+
 from fastapi import FastAPI
+from pydantic import BaseModel
 from database import create_tables, get_connection
 
 app = FastAPI()
+
+class TaskStatus(str, Enum):
+    TODO = "To Do"
+    IN_PROGRESS = "In Progress"
+    DONE = "Done"
+
+
+class TaskPriority(str, Enum):
+    LOW = "Low"
+    MEDIUM = "Medium"
+    HIGH = "High"
+
+class TaskCreate(BaseModel):
+    title: str
+    description: str = ""
+    status: TaskStatus = TaskStatus.TODO
+    priority: TaskPriority = TaskPriority.MEDIUM
+
 
 create_tables()
 
@@ -49,20 +70,21 @@ def get_projects():
     return [dict(project) for project in projects]
 
 @app.post("/projects/{project_id}/tasks")
-def create_task(
-    project_id: int,
-    title: str,
-    description: str = "",
-    priority: str = "Medium"
-):
+def create_task(project_id: int, task: TaskCreate):
     connection = get_connection()
 
     cursor = connection.execute(
         """
-        INSERT INTO tasks (title, description, priority, project_id)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO tasks (title, description, status, priority, project_id)
+        VALUES (?, ?, ?, ?, ?)
         """,
-        (title, description, priority, project_id)
+        (
+            task.title,
+            task.description,
+            task.status,
+            task.priority,
+            project_id
+        )
     )
 
     connection.commit()
@@ -73,9 +95,10 @@ def create_task(
 
     return {
         "id": task_id,
-        "title": title,
-        "description": description,
-        "priority": priority,
+        "title": task.title,
+        "description": task.description,
+        "status": task.status,
+        "priority": task.priority,
         "project_id": project_id
     }
 
