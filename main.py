@@ -96,3 +96,59 @@ def get_tasks(project_id: int):
     connection.close()
 
     return [dict(task) for task in tasks]
+
+@app.put("/tasks/{task_id}")
+def update_task(
+    task_id: int,
+    title: str,
+    description: str = "",
+    status: str = "To Do",
+    priority: str = "Medium"
+):
+    connection = get_connection()
+
+    connection.execute(
+        """
+        UPDATE tasks
+        SET title = ?, description = ?, status = ?, priority = ?
+        WHERE id = ?
+        """,
+        (title, description, status, priority, task_id)
+    )
+
+    connection.commit()
+
+    updated_task = connection.execute(
+        "SELECT * FROM tasks WHERE id = ?",
+        (task_id,)
+    ).fetchone()
+
+    connection.close()
+
+    if updated_task is None:
+        return {"error": "Task not found"}
+
+    return dict(updated_task)
+
+@app.delete("/tasks/{task_id}")
+def delete_task(task_id: int):
+    connection = get_connection()
+
+    task = connection.execute(
+        "SELECT * FROM tasks WHERE id = ?",
+        (task_id,)
+    ).fetchone()
+
+    if task is None:
+        connection.close()
+        return {"error": "Task not found"}
+
+    connection.execute(
+        "DELETE FROM tasks WHERE id = ?",
+        (task_id,)
+    )
+
+    connection.commit()
+    connection.close()
+
+    return {"message": "Task deleted successfully"}
