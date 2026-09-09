@@ -1,5 +1,10 @@
 from fastapi import APIRouter, status
-from database import get_connection
+
+from services.project_service import (
+    create_project,
+    get_all_projects
+)
+
 
 router = APIRouter(
     prefix="/projects",
@@ -8,38 +13,10 @@ router = APIRouter(
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-def create_project(name: str, description: str = ""):
-    connection = get_connection()
-
-    cursor = connection.execute(
-        """
-        INSERT INTO projects (name, description)
-        VALUES (?, ?)
-        """,
-        (name, description)
-    )
-
-    connection.commit()
-
-    project_id = cursor.lastrowid
-
-    connection.close()
-
-    return {
-        "id": project_id,
-        "name": name,
-        "description": description
-    }
+def create_new_project(name: str, description: str = ""):
+    return create_project(name, description)
 
 
 @router.get("/")
 def get_projects():
-    connection = get_connection()
-
-    projects = connection.execute(
-        "SELECT * FROM projects"
-    ).fetchall()
-
-    connection.close()
-
-    return [dict(project) for project in projects]
+    return get_all_projects()
