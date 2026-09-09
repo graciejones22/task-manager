@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Manager</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Manager</h1>
+        <p>Project & Task Management</p>
+    </header>
+
+    <main>
+        <section>
+            <div class="section-header">
+                <h2>My Projects</h2>
+                <button id="new-project-button">
+                    + New Project
+                </button>
+            </div>
+
+            <div id="projects-container">
+                <p>Loading projects...</p>
+            </div>
+
+            <div id="project-form-container" class="hidden">
+                <h3>Create a New Project</h3>
+
+                <form id="project-form">
+
+                    <label for="project-name">Project Name</label>
+                    <input
+                        type="text"
+                        id="project-name"
+                        required
+                    >
+
+                    <label for="project-description">Description</label>
+                    <textarea
+                        id="project-description"
+                        rows="4"
+                    ></textarea>
+
+                    <div class="form-buttons">
+                        <button type="submit">Create Project</button>
+                        <button type="button" id="cancel-project-button">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+
+</body>
+</html>
