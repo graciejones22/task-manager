@@ -1,6 +1,6 @@
 from enum import Enum
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel
 
 from database import get_connection
@@ -31,7 +31,7 @@ class TaskCreate(BaseModel):
     priority: TaskPriority = TaskPriority.MEDIUM
 
 
-@router.post("/project/{project_id}")
+@router.post("/project/{project_id}", status_code=status.HTTP_201_CREATED)
 def create_task(project_id: int, task: TaskCreate):
     connection = get_connection()
 
@@ -115,7 +115,10 @@ def update_task(
     connection.close()
 
     if updated_task is None:
-        return {"error": "Task not found"}
+        raise HTTPException(
+        status_code=404,
+        detail="Task not found"
+    )
 
     return dict(updated_task)
 
@@ -131,7 +134,10 @@ def delete_task(task_id: int):
 
     if task is None:
         connection.close()
-        return {"error": "Task not found"}
+        raise HTTPException(
+            status_code=404,
+            detail="Task not found"
+        )
 
     connection.execute(
         "DELETE FROM tasks WHERE id = ?",

@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, status
 from database import get_connection
 
 router = APIRouter(
@@ -7,7 +7,7 @@ router = APIRouter(
 )
 
 
-@router.post("/")
+@router.post("/", status_code=status.HTTP_201_CREATED)
 def create_project(name: str, description: str = ""):
     connection = get_connection()
 
