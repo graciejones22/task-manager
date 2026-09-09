@@ -56,6 +56,51 @@
                 </form>
             </div>
         </section>
+        <section id="tasks-section" class="hidden">
+            <div class="section-header">
+                <h2 id="tasks-title">Tasks</h2>
+                <button id="new-task-button">
+                    + New Task
+                </button>
+            </div>
+
+            <div id="tasks-container">
+                <p>No tasks yet.</p>
+            </div>
+
+            <div id="task-form-container" class="hidden">
+                <h3>Create a New Task</h3>
+
+                <form id="task-form">
+                    <label for="task-title">Task Title</label>
+                    <input type="text" id="task-title" required>
+
+                    <label for="task-description">Description</label>
+                    <textarea id="task-description" rows="4"></textarea>
+
+                    <label for="task-status">Status</label>
+                    <select id="task-status">
+                        <option value="To Do">To Do</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Done">Done</option>
+                    </select>
+
+                    <label for="task-priority">Priority</label>
+                    <select id="task-priority">
+                        <option value="Low">Low</option>
+                        <option value="Medium" selected>Medium</option>
+                        <option value="High">High</option>
+                    </select>
+
+                    <div class="form-buttons">
+                        <button type="submit">Create Task</button>
+                        <button type="button" id="cancel-task-button">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
     </main>
 
     <script src="app.js"></script>
